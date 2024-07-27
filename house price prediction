@@ -1,0 +1,52 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Load dataset
+data = pd.read_csv('/content/house price.csv')
+
+# Check the actual column names in your dataset
+print(data.columns)
+
+# Features and target variable
+# Adjust the column names below to match the actual names in your dataset
+X = data[['area', 'bedroom', 'bathroom', 'floor', 'age']]  # Updated column names
+y = data['price']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Standardize the features
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Initialize and train the Linear Regression model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Evaluate the model
+print("Mean Squared Error:", mean_squared_error(y_test, y_pred))
+print("R^2 Score:", r2_score(y_test, y_pred))
+
+# To make a prediction for a new data point
+new_data = pd.DataFrame({
+    'area': [2000],
+    'bedroom': [4],  # Updated column name
+    'bathroom': [3], # Updated column name
+    'floor': [2],   # Updated column name
+    'age': [10]
+})
+
+# Standardize the new data
+new_data = scaler.transform(new_data)
+
+# Predict price for new data
+new_price = model.predict(new_data)
+print("Predicted price for new data:", new_price[0])
