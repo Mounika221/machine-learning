@@ -1,0 +1,41 @@
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report, accuracy_score
+
+# Load dataset (replace 'data.csv' with your actual data file)
+# The dataset should have features and a 'credit_score' column
+data = pd.read_csv('/content/credit score.csv')
+
+# Assume the label column is named 'credit_score' and it has values like 'Good', 'Average', 'Poor'
+X = data.drop('credit_score', axis=1)
+y = data['credit_score']
+
+# Split the data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=42)
+
+# Standardize the features
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Initialize and train the Random Forest Classifier
+classifier = RandomForestClassifier(n_estimators=100, random_state=42)
+classifier.fit(X_train, y_train)
+
+# Make predictions
+y_pred = classifier.predict(X_test)
+
+# Evaluate the model
+print("Accuracy Score:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
+# To make a prediction for a new data point
+# Example new data (replace with actual values)
+new_data = np.array([[0.5, 1.2, -0.3]])  # Replace with real feature values
+new_data = scaler.transform(new_data)
+prediction = classifier.predict(new_data)
+print("Prediction for new data:", prediction)
+
